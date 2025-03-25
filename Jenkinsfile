@@ -1,31 +1,41 @@
 pipeline {
     agent any
+
     stages {
         stage('Extraction') {
             steps {
                 script {
-                    // Clone du repo si nécessaire et exécution du script extract.py
-                    sh 'python extract.py'
+                    echo '📥 Début de l’extraction des données...'
+                    bat 'python extract.py'  // Utilisation de bat au lieu de sh sous Windows
                 }
             }
         }
-        
+
         stage('Transformation') {
             steps {
                 script {
-                    // Exécution du script de transformation
-                    sh 'python transform.py'
+                    echo '🔄 Transformation des données...'
+                    bat 'python transform.py'
                 }
             }
         }
-        
+
         stage('Chargement') {
             steps {
                 script {
-                    // Exécution du script de chargement
-                    sh 'python load.py'
+                    echo '📤 Chargement des données dans PostgreSQL...'
+                    bat 'python load.py'
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Pipeline terminé avec succès !'
+        }
+        failure {
+            echo '❌ Erreur dans le pipeline. Vérifiez les logs.'
         }
     }
 }
